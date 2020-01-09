@@ -132,5 +132,5 @@ class ToDoHTTPServer(threading.Thread):
 		self.logger.log('started httpserver...')
 		MyHandler.logger = self.logger
 		MyHandler.wrapper = self.wrapper
-		MyHandler.url_router = self.factory.fetch('UrlRouter')
+		MyHandler.url_handler = self.factory.fetch('UrlHandler')
 		server.serve_forever()
