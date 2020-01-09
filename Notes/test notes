@@ -1,0 +1,55 @@
+Running tests
+python3 -m unittest discover -f
+
+
+Common Assertions
+
+self.assertTrue
+self.assertEqual(expected, actual)
+self.assertIsNone
+
+self.mock = MagicMock()
+
+mock.           .mock_calls
+                reset_mock()
+                print(mock.call_args_list)
+
+mock.method.    assert_any_call(parameters)
+                call_count
+                assert_called_with(parameters)
+                assert_called_once_with(parameters)
+                assert_not_called()
+                = MagicMock(return_value=val)
+                side_effect = call(params)
+
+self.assertRaises(Exception, class/action, parameters)
+
+with self.assertRaises(Exception) as ctx:
+        call operation
+self.assertEqual('exception message', str(ctx.exception))
+
+    @unittest.skip("skip")
+
+# Support Code
+
+        self.set_up_mocks()
+        self.set_up_data()
+        self.set_up_object_under_test()
+        self.set_up_expectations()
+
+
+SELECT last_insert_rowid()
+
+
+udp listener
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server_socket.bind(('', 12000))
+
+while True:
+    message, address = server_socket.recvfrom(1024)
+    print(message, address)
+
+udp sender
+        clientsocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        address = ("127.0.0.1", 12000)
+        clientsocket.sendto('hello'.encode(), address)
