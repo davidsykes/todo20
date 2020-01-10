@@ -10,15 +10,15 @@ class TestUrlDissector(unittest.TestCase):
         self.set_up_object_under_test()
 
     def test_a_simple_request_is_dissected(self):
-        result = self.dissector.dissect('/todo/tasks')
+        result = self.dissector.dissect_url('/todo/tasks')
         self.assertEqual(['todo', 'tasks'], result)
 
     def test_double_slashes_fail(self):
-        result = self.dissector.dissect('//todo/tasks')
+        result = self.dissector.dissect_url('//todo/tasks')
         self.assertIsNone(result)
 
     def test_non_lowercase_fails(self):
-        result = self.dissector.dissect('/tOdo/tasks')
+        result = self.dissector.dissect_url('/tOdo/tasks')
         self.assertIsNone(result)
 
     # Support code

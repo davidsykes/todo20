@@ -1,3 +1,4 @@
+from enum import Enum
 
 class RequestObjectType(Enum):
     get = 1

@@ -15,18 +15,17 @@ class TestUrlRouter(unittest.TestCase):
         self.set_up_expectations()
 
     def test_get_passes_url_to_url_disector(self):
-        self.handler.get(self.url, self.mock_http_server)
+        self.handler.handle_request(self.url, self.http_request)
         self.mock_url_dissector.dissect_url.assert_called_once_with(self.url)
 
-    def test_get_passes_disector_response_and_server_to_router(self):
-        self.handler.get(self.url, self.mock_http_server)
-        self.mock_url_router.get.assert_called_once_with(self.dissected_url, self.mock_http_server)
+    def test_get_passes_disector_response_and_request_to_router(self):
+        self.handler.handle_request(self.url, self.http_request)
+        self.mock_url_router.route_request.assert_called_once_with(self.dissected_url, self.http_request)
 
     # Support code
 
     def set_up_mocks(self):
         self.factory = Factory()
-        self.mock_http_server = MagicMock()
         self.mock_url_dissector = MagicMock()
         self.mock_url_dissector.dissect_url = MagicMock()
         self.factory.register('UrlDissector', self.mock_url_dissector)
@@ -35,6 +34,7 @@ class TestUrlRouter(unittest.TestCase):
 
     def set_up_data(self):
         self.url = 'test url'
+        self.http_request = 'http request'
         self.dissected_url = 'dissected url'
 
     def set_up_object_under_test(self):

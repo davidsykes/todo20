@@ -17,6 +17,9 @@ from daily_file_logger import DailyFileLogger
 from todohttpserver import ToDoHTTPServer
 from factory import Factory
 from urlhandler import UrlHandler
+from urldissector import UrlDissector
+from urlrouter import UrlRouter
+from defaultdestination import DefaultDestination
 
 rvPermanentError = 9
 DAILY_LOG_NAME = 'todolog'
@@ -31,6 +34,8 @@ try:
 	logger = LogChainer(DailyFileLogger(factory, DAILY_LOG_NAME, DAILY_LOG_EXT))
 	logger.chain(ConsoleLogger(True))
 	factory.register('Logger', logger)
+	factory.register('UrlDissector', UrlDissector())
+	factory.register('UrlRouter', UrlRouter(DefaultDestination()))
 	factory.register('UrlHandler', UrlHandler(factory))
 
 	httpserver = ToDoHTTPServer(factory, logger)

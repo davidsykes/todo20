@@ -5,6 +5,6 @@ class UrlHandler(object):
         self.url_dissector = factory.fetch('UrlDissector')
         self.url_router = factory.fetch('UrlRouter')
 
-    def get(self, url, server):
+    def handle_request(self, url, request):
         dissected = self.url_dissector.dissect_url(url)
-        self.url_router.get(dissected, server)
+        self.url_router.route_request(dissected, request)
