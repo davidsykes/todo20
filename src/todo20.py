@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 
-#import os
-#import sys
 import time
-#import sqlite3
-#import threading
-#import traceback
 import sys
 sys.path.append('../Library/src')
 sys.path.append('../../temperatures/Library/src')
@@ -21,10 +16,12 @@ from urldissector import UrlDissector
 from urlrouter import UrlRouter
 from defaultdestination import DefaultDestination
 
+sys.path.append('../pagegroups/testpagegroup/src')
+from pagegroup import TestPageGroup
+
 rvPermanentError = 9
 DAILY_LOG_NAME = 'todolog'
 DAILY_LOG_EXT = 'log'
-#WEB_PATH = '/home/dev/Documents/temperatures/WebServer/www'
 
 
 try:
@@ -37,6 +34,8 @@ try:
 	factory.register('UrlDissector', UrlDissector())
 	factory.register('UrlRouter', UrlRouter(DefaultDestination()))
 	factory.register('UrlHandler', UrlHandler(factory))
+
+	factory.fetch('UrlRouter').register_destination('test', TestPageGroup())
 
 	httpserver = ToDoHTTPServer(factory, logger)
 

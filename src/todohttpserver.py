@@ -77,17 +77,15 @@ class MyHandler(BaseHTTPRequestHandler):
 #			self.wfile.write(response)
 
 		except Exception as e:
-			print ('UNEXPECTED GET EXCEPTION', e)
-			print ('path', self.path)
-			je = {}
-			je['exception'] = True
-			je['message'] = str(e)
-			je['message'] = je['message'] + "\n" + traceback.format_exc(10)
-			self.send_response(505)
-			response = json.dumps(je)
+			self.logger.log('Exception: %s' % (str(e)))
+			self.logger.log('Path: %s' % (self.path))
+			self.logger.log('Stack: %s' % (traceback.format_exc(10)))
+
+			self.send_response(500)
+			response = 'exception'
 			self.end_headers()
-			self.wfile.write(response)
-			raise
+			self.write_text(response)
+			return
 
 #		except IOError, e:
 #			print 'Exception!'
@@ -114,7 +112,7 @@ class MyHandler(BaseHTTPRequestHandler):
 			je['exception'] = True
 			je['message'] = str(e)
 			je['message'] = je['message'] + "\n" + traceback.format_exc(10)
-			self.send_response(505)
+			self.send_response(500)
 			response = json.dumps(je)
 			self.end_headers()
 			self.wfile.write(response)
@@ -131,7 +129,7 @@ class MyHandler(BaseHTTPRequestHandler):
 		self.send_header('Content-type',	'text/html')
 		self.end_headers()
 
-	def write(self, data):
+	def write_text(self, data):
 		self.wfile.write(data.encode())
 
 
@@ -147,7 +145,7 @@ class ToDoHTTPServer(threading.Thread):
 		self.logger.log('Try web server on port 8080')
 		server = HTTPServer(('', 8080), MyHandler)
 		self.logger.log('started httpserver...')
+		MyHandler.factory = self.factory
 		MyHandler.logger = self.logger
-		#MyHandler.wrapper = HTTPServerWrapper(server)
 		MyHandler.url_handler = self.factory.fetch('UrlHandler')
 		server.serve_forever()

@@ -16,10 +16,20 @@ class TestUrlRouter(unittest.TestCase):
         self.router.route_request(None, self.request)
         self.mock_default_destination.process_request.assert_called_once_with(self.request)
 
+    def test_unrecognised_requests_are_send_to_default_destination(self):
+        self.router.route_request(['command', 'parameters'], self.request)
+        self.mock_default_destination.process_request.assert_called_once_with(self.request)
+
+    def test_recognised_requests_are_send_to_specified_destination(self):
+        self.router.register_destination('command', self.mock_destination)
+        self.router.route_request(['command', 'parameters'], self.request)
+        self.mock_destination.process_request.assert_called_once_with(self.request)
+
     # Support code
 
     def set_up_mocks(self):
         self.mock_default_destination = MagicMock()
+        self.mock_destination = MagicMock()
 
     def set_up_data(self):
         self.request = 'http request'

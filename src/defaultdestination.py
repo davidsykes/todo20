@@ -5,4 +5,4 @@ class DefaultDestination(object):
         http_server = request.server
         http_server.send_code(404)
         http_server.send_text_header()
-        http_server.write("Not found: '%s'" % (request.url))
+        http_server.write_text("Not found: '%s'" % (request.url))
