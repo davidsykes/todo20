@@ -18,6 +18,8 @@ from defaultdestination import DefaultDestination
 
 sys.path.append('../pagegroups/testpagegroup/src')
 from pagegroup import TestPageGroup
+sys.path.append('../pagegroups/ttt/src')
+from tttpagegroup import TickTackToePageGroup
 
 rvPermanentError = 9
 DAILY_LOG_NAME = 'todolog'
@@ -36,6 +38,7 @@ try:
 	factory.register('UrlHandler', UrlHandler(factory))
 
 	factory.fetch('UrlRouter').register_destination('test', TestPageGroup())
+	factory.fetch('UrlRouter').register_destination('ttt', TickTackToePageGroup())
 
 	httpserver = ToDoHTTPServer(factory, logger)
 

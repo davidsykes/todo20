@@ -22,6 +22,10 @@ class TestUrlRouter(unittest.TestCase):
         self.handler.handle_request(self.url, self.http_request)
         self.mock_url_router.route_request.assert_called_once_with(self.dissected_url, self.http_request)
 
+    def test_failed_dissections_are_passed_to_the_logger(self):
+        self.handler.handle_request('invalid url', self.http_request)
+        self.mock_logger.log.assert_called_once_with('Invalid URL: invalid url')
+
     # Support code
 
     def set_up_mocks(self):
@@ -31,6 +35,9 @@ class TestUrlRouter(unittest.TestCase):
         self.factory.register('UrlDissector', self.mock_url_dissector)
         self.mock_url_router = MagicMock()
         self.factory.register('UrlRouter', self.mock_url_router)
+        self.mock_logger = MagicMock()
+        self.mock_logger.log = MagicMock()
+        self.factory.register('Logger', self.mock_logger)
 
     def set_up_data(self):
         self.url = 'test url'
@@ -47,4 +54,4 @@ class TestUrlRouter(unittest.TestCase):
         if url == self.url:
             return self.dissected_url
         else:
-            return 'something else'
+            return None
