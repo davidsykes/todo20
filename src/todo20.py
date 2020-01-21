@@ -34,11 +34,11 @@ try:
 	logger.chain(ConsoleLogger(True))
 	factory.register('Logger', logger)
 	factory.register('UrlDissector', UrlDissector())
-	factory.register('UrlRouter', UrlRouter(DefaultDestination()))
+	factory.register('UrlRouter', UrlRouter(DefaultDestination('/home/dev/Documents/todo20/www')))
 	factory.register('UrlHandler', UrlHandler(factory))
 
-	factory.fetch('UrlRouter').register_destination('test', TestPageGroup())
-	factory.fetch('UrlRouter').register_destination('ttt', TickTackToePageGroup())
+	factory.fetch('UrlRouter').register_destination('test', TestPageGroup('/home/dev/Documents/todo20/pagegroups/testpagegroup/pages'))
+	factory.fetch('UrlRouter').register_destination('ttt', TickTackToePageGroup('/home/dev/Documents/react/my-app/build'))
 
 	httpserver = ToDoHTTPServer(factory, logger)
 

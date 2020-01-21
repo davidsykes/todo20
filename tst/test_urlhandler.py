@@ -22,9 +22,10 @@ class TestUrlRouter(unittest.TestCase):
         self.handler.handle_request(self.url, self.http_request)
         self.mock_url_router.route_request.assert_called_once_with(self.dissected_url, self.http_request)
 
-    def test_failed_dissections_are_passed_to_the_logger(self):
+    def test_failed_dissections_are_passed_to_the_logger_before_being_routed(self):
         self.handler.handle_request('invalid url', self.http_request)
         self.mock_logger.log.assert_called_once_with('Invalid URL: invalid url')
+        self.mock_url_router.route_request.assert_called_once_with(None, self.http_request)
 
     # Support code
 

@@ -21,25 +21,36 @@ class TestFilePathHandler(unittest.TestCase):
         path = self.handler.generate_path('folder/simple.path')
         self.assertEqual('base path/folder/simple.path', path)
 
+    def test_a_leading_slash_is_accepted(self):
+        path = self.handler.generate_path('/folder/simple.path')
+        self.assertEqual('base path/folder/simple.path', path)
+
+    def test_multiple_leading_slashes_are_accepted(self):
+        path = self.handler.generate_path('/////folder/simple.path')
+        self.assertEqual('base path/folder/simple.path', path)
+
     def test_leading_dots_are_rejected(self):
         with self.assertRaises(Exception) as ctx:
             self.handler.generate_path('../simple.path')
-        self.assertEqual('Not Found: ../simple.path', str(ctx.exception))
+        self.assertEqual('Path not found: ../simple.path', str(ctx.exception))
 
     def test_middle_dots_are_rejected(self):
         with self.assertRaises(Exception) as ctx:
             self.handler.generate_path('f/../simple.path')
-        self.assertEqual('Not Found: f/../simple.path', str(ctx.exception))
-
-    def test_anything_with_leading_slashes_is_rejected(self):
-        with self.assertRaises(Exception) as ctx:
-            self.handler.generate_path('/folder/simple.path')
-        self.assertEqual('Not Found: /folder/simple.path', str(ctx.exception))
+        self.assertEqual('Path not found: f/../simple.path', str(ctx.exception))
 
     def test_only_simple_characters_are_accepted(self):
         with self.assertRaises(Exception) as ctx:
             self.handler.generate_path('~/folder/simple.path')
-        self.assertEqual('Not Found: ~/folder/simple.path', str(ctx.exception))
+        self.assertEqual('Path not found: ~/folder/simple.path', str(ctx.exception))
+
+    def test_missing_paths_become_index(self):
+        path = self.handler.generate_path('')
+        self.assertEqual('base path/index.html', path)
+
+    def test_root_paths_become_index(self):
+        path = self.handler.generate_path('/')
+        self.assertEqual('base path/index.html', path)
 
     # Support code
 

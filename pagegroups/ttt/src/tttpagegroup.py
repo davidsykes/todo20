@@ -12,28 +12,28 @@ from datetime_wrapper import DateTimeWrapper
 from fs_wrapper import FsWrapper
 from console_logger import ConsoleLogger
 
-DAILY_LOG_NAME = 'testpageslog'
+DAILY_LOG_NAME = 'tttpageslog'
 DAILY_LOG_EXT = 'log'
-WEB_PATH = '~/Documents/todo20/pagegroups/testpagegroup/pages'
 
 class TickTackToePageGroup(object):
-    def __init__(self):
+    def __init__(self, www_path):
         self.factory = Factory()
         self.factory.register('DateTimeWrapper', DateTimeWrapper())
         self.factory.register('FsWrapper', FsWrapper())
         self.urlparser = UrlParser()
-        self.filepathhandler = FilePathHandler(WEB_PATH)
+        self.filepathhandler = FilePathHandler(www_path)
         self.logger = LogChainer(DailyFileLogger(self.factory, DAILY_LOG_NAME, DAILY_LOG_EXT))
         self.logger.chain(ConsoleLogger(True))
 
-    def process_request(self, request):
+    def process_request(self, page_group_url, request):
         try:
+            print('ttt request', page_group_url, '||||', request)
             rest = self.urlparser.parse_url(request.url)
             if (rest):
                 pass
                 return
 
-            path = self.filepathhandler.generate_path(request.url)
+            path = self.filepathhandler.generate_path(page_group_url)
             request.server.write_file(path)
 
         except Exception as e:

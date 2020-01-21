@@ -8,7 +8,7 @@ class UrlHandler(object):
 
     def handle_request(self, url, request):
         dissected = self.url_dissector.dissect_url(url)
-        if dissected:
-            self.url_router.route_request(dissected, request)
-        else:
+        if not dissected:
             self.logger.log('Invalid URL: %s' % (url))
+        self.url_router.route_request(dissected, request)
+

@@ -14,19 +14,18 @@ from console_logger import ConsoleLogger
 
 DAILY_LOG_NAME = 'testpageslog'
 DAILY_LOG_EXT = 'log'
-WEB_PATH = '~/Documents/todo20/pagegroups/testpagegroup/pages'
 
 class TestPageGroup(object):
-    def __init__(self):
+    def __init__(self, www_path):
         self.factory = Factory()
         self.factory.register('DateTimeWrapper', DateTimeWrapper())
         self.factory.register('FsWrapper', FsWrapper())
         self.urlparser = UrlParser()
-        self.filepathhandler = FilePathHandler(WEB_PATH)
+        self.filepathhandler = FilePathHandler(www_path)
         self.logger = LogChainer(DailyFileLogger(self.factory, DAILY_LOG_NAME, DAILY_LOG_EXT))
         self.logger.chain(ConsoleLogger(True))
 
-    def process_request(self, request):
+    def process_request(self, page_group_url, request):
         try:
             rest = self.urlparser.parse_url(request.url)
             if (rest):

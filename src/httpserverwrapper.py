@@ -6,7 +6,7 @@ class HTTPServerWrapper(object):
         self.content_types = {
             '.css': 'text/css',
             '.html': 'text/html',
-            '.js': 'text/html',
+            '.js': 'text/javascript',
             '.png': 'text/png',
             '.ico': 'text/png',
             '.woff': 'text/png',
@@ -34,11 +34,11 @@ class HTTPServerWrapper(object):
             raise Exception('path not found: %s' % (path))
         extension = os.path.splitext(path)[1]
         content_type = self.get_content_type(extension)
-        f = open("."+self.path,"rb")
-        self.send_response(200)
-        self.send_header('Content-type', content_type)
-        self.end_headers()
-        self.wfile.write(f.read())
+        f = open(path,"rb")
+        self.http_server.send_code(200)
+        self.http_server.send_header('Content-type', content_type)
+        self.http_server.end_headers()
+        self.http_server.wfile.write(f.read())
         f.close()
         return
 

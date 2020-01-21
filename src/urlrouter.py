@@ -9,14 +9,14 @@ class UrlRouter(object):
         self.destinations[command] = destination
 
     def route_request(self, dissected_url, request):
-        destination = self.get_destination(dissected_url)
-        destination.process_request(request)
+        destination, parameters = self.get_destination(dissected_url)
+        destination.process_request(parameters, request)
 
     def get_destination(self, url):
         if url is None:
-            return self.default_destination
+            return self.default_destination, None
         
         if url[0] in self.destinations:
-            return self.destinations[url[0]]
+            return self.destinations[url[0]], url[1]
 
-        return self.default_destination
+        return self.default_destination, url[1]

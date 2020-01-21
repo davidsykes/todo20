@@ -14,16 +14,16 @@ class TestUrlRouter(unittest.TestCase):
 
     def test_blank_requests_are_send_to_default_destination(self):
         self.router.route_request(None, self.request)
-        self.mock_default_destination.process_request.assert_called_once_with(self.request)
+        self.mock_default_destination.process_request.assert_called_once_with(None, self.request)
 
     def test_unrecognised_requests_are_send_to_default_destination(self):
         self.router.route_request(['command', 'parameters'], self.request)
-        self.mock_default_destination.process_request.assert_called_once_with(self.request)
+        self.mock_default_destination.process_request.assert_called_once_with('parameters', self.request)
 
     def test_recognised_requests_are_send_to_specified_destination(self):
         self.router.register_destination('command', self.mock_destination)
         self.router.route_request(['command', 'parameters'], self.request)
-        self.mock_destination.process_request.assert_called_once_with(self.request)
+        self.mock_destination.process_request.assert_called_once_with('parameters', self.request)
 
     # Support code
 
