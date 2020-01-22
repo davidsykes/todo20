@@ -17,17 +17,13 @@ class TestUrlDissector(unittest.TestCase):
         result = self.dissector.dissect_url('/todo/tasks')
         self.assertEqual(['todo', 'tasks'], result)
 
+    def test_url_with_no_leading_slash_is_accepted(self):
+        result = self.dissector.dissect_url('todo/tasks')
+        self.assertEqual(['todo', 'tasks'], result)
+
     def test_sub_sub_folders_are_not_dissected_yet(self):
         result = self.dissector.dissect_url('/todo/tasks/watev')
         self.assertEqual(['todo', 'tasks/watev'], result)
-
-    def test_double_slashes_fail(self):
-        result = self.dissector.dissect_url('//todo/tasks')
-        self.assertIsNone(result)
-
-    def test_non_lowercase_fails(self):
-        result = self.dissector.dissect_url('/tOdo/tasks')
-        self.assertIsNone(result)
 
     # Support code
 

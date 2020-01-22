@@ -12,7 +12,6 @@ class FilePathHandler(object):
         path = path.strip("/")
         if self.path_is_invalid(path):
             raise Exception('Path not found: %s' % (path))
-        print('sfsdfds', path, self.path_is_empty(path))
         if self.path_is_empty(path):
             path = INDEX
         return os.path.join(self.base_path, path.strip("/"))

@@ -15,7 +15,7 @@ class MyHandler(BaseHTTPRequestHandler):
 
 			wrapper = HTTPServerWrapper(self)
 			request = RequestObject.create_get_request(url, wrapper)
-			self.url_handler.handle_request(url, request)
+			self.rest_handler.handle_request(url, request)
 
 
 # 			# Return html, css or js files direction
@@ -147,5 +147,5 @@ class ToDoHTTPServer(threading.Thread):
 		self.logger.log('started httpserver...')
 		MyHandler.factory = self.factory
 		MyHandler.logger = self.logger
-		MyHandler.url_handler = self.factory.fetch('UrlHandler')
+		MyHandler.rest_handler = self.factory.fetch('RestHandler')
 		server.serve_forever()

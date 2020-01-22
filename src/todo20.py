@@ -11,7 +11,8 @@ from console_logger import ConsoleLogger
 from daily_file_logger import DailyFileLogger
 from todohttpserver import ToDoHTTPServer
 from factory import Factory
-from urlhandler import UrlHandler
+from resthandler import RestHandler
+from urlvalidator import UrlValidator
 from urldissector import UrlDissector
 from urlrouter import UrlRouter
 from defaultdestination import DefaultDestination
@@ -33,9 +34,10 @@ try:
 	logger = LogChainer(DailyFileLogger(factory, DAILY_LOG_NAME, DAILY_LOG_EXT))
 	logger.chain(ConsoleLogger(True))
 	factory.register('Logger', logger)
+	factory.register('UrlValidator', UrlValidator())
 	factory.register('UrlDissector', UrlDissector())
 	factory.register('UrlRouter', UrlRouter(DefaultDestination('/home/dev/Documents/todo20/www')))
-	factory.register('UrlHandler', UrlHandler(factory))
+	factory.register('RestHandler', RestHandler(factory))
 
 	factory.fetch('UrlRouter').register_destination('test', TestPageGroup('/home/dev/Documents/todo20/pagegroups/testpagegroup/pages'))
 	factory.fetch('UrlRouter').register_destination('ttt', TickTackToePageGroup('/home/dev/Documents/react/my-app/build'))
