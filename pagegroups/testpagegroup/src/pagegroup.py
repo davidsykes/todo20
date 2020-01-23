@@ -6,14 +6,16 @@ sys.path.append('../../../../temperatures/Library/src')
 from urlparser import UrlParser
 from filepathhandler import FilePathHandler
 from factory import Factory
+from logger import Logger
 from logchainer import LogChainer
-from daily_file_logger import DailyFileLogger
+from dailyfilewriter import DailyFileWriter
 from datetime_wrapper import DateTimeWrapper
 from fs_wrapper import FsWrapper
 from console_logger import ConsoleLogger
 
 DAILY_LOG_NAME = 'testpageslog'
 DAILY_LOG_EXT = 'log'
+DAILY_ERR_EXT = 'err'
 
 class TestPageGroup(object):
     def __init__(self, www_path):
@@ -22,7 +24,11 @@ class TestPageGroup(object):
         self.factory.register('FsWrapper', FsWrapper())
         self.urlparser = UrlParser()
         self.filepathhandler = FilePathHandler(www_path)
-        self.logger = LogChainer(DailyFileLogger(self.factory, DAILY_LOG_NAME, DAILY_LOG_EXT))
+
+        daily_log_writer = DailyFileWriter(self.factory, DAILY_LOG_NAME, DAILY_LOG_EXT)
+        daily_err_writer = DailyFileWriter(self.factory, DAILY_LOG_NAME, DAILY_ERR_EXT)
+        daily_logger = Logger(self.factory, daily_log_writer, daily_err_writer)
+        self.logger = LogChainer(daily_logger)
         self.logger.chain(ConsoleLogger(True))
 
     def process_request(self, page_group_url, request):

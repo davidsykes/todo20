@@ -15,6 +15,7 @@ class DailyFileWriter(object):
     def write(self, text):
         self.ensure_file_for_today_is_open()
         self.current_file.write(text)
+        self.current_file.flush()
 
     def initialise_objects_from_factory(self, factory):
         self.date_time_wrapper = factory.fetch('DateTimeWrapper')

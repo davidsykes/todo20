@@ -15,6 +15,11 @@ class TestLogChainer(unittest.TestCase):
         self.logger1.log.assert_called_once_with('message')
         self.logger2.log.assert_called_once_with('message')
 
+    def test_error_message_is_passed_to_all_chained_loggers(self):
+        self.chainer.error('message')
+        self.logger1.error.assert_called_once_with('message')
+        self.logger2.error.assert_called_once_with('message')
+
     # Support code
 
     def set_up_mocks(self):

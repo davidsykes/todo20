@@ -77,9 +77,9 @@ class MyHandler(BaseHTTPRequestHandler):
 #			self.wfile.write(response)
 
 		except Exception as e:
-			self.logger.log('Exception: %s' % (str(e)))
-			self.logger.log('Path: %s' % (self.path))
-			self.logger.log('Stack: %s' % (traceback.format_exc(10)))
+			self.logger.error('Exception: %s' % (str(e)))
+			self.logger.error('Path: %s' % (self.path))
+			self.logger.error('Stack: %s' % (traceback.format_exc(10)))
 
 			self.send_response(500)
 			response = 'exception'

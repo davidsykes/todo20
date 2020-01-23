@@ -10,3 +10,7 @@ class LogChainer(object):
     def log(self, message):
         for logger in self.loggers:
             logger.log(message)
+
+    def error(self, message):
+        for logger in self.loggers:
+            logger.error(message)

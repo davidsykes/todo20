@@ -29,6 +29,10 @@ class TestDailyFileWriter(unittest.TestCase):
         self.writer.write('text')
         self.mock_file_20190315.write.assert_called_once_with("text")
 
+    def test_first_write_flushes_original_opened_file(self):
+        self.writer.write('text')
+        self.mock_file_20190315.flush.assert_called_once()
+
     # Second write with no date change
 
     def test_second_write_with_no_date_change_requests_current_date(self):
@@ -73,8 +77,13 @@ class TestDailyFileWriter(unittest.TestCase):
         self.writer.write('text1')
         self.mock_datetime.now = MagicMock(return_value=datetime.datetime(2019,3,17,0,0,1))
         self.writer.write('text2')
-
         self.mock_file_20190315.close.assert_called_once()
+
+    def test_second_write_with_date_change_flushes_second_opened_file(self):
+        self.writer.write('text1')
+        self.mock_datetime.now = MagicMock(return_value=datetime.datetime(2019,3,17,0,0,1))
+        self.writer.write('text2')
+        self.mock_file_20190317.flush.assert_called_once()
 
     # Support code
 
@@ -86,8 +95,6 @@ class TestDailyFileWriter(unittest.TestCase):
         self.factory.register('FsWrapper', self.mock_fs_wrapper)
         self.mock_file_20190315 = MagicMock()
         self.mock_file_20190317 = MagicMock()
-        #self.mock_logger_console = MagicMock()
-        #self.factory.register('LoggerConsole', self.mock_logger_console)
 
     def set_up_object_under_test(self):
         self.writer = DailyFileWriter(self.factory, 'name', 'ext')
