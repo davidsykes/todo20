@@ -31,15 +31,26 @@ class TestUrlValidator(unittest.TestCase):
             self.validator.validate_url('../todo/./tasks')
         self.assertEqual('Invalid URL: ../todo/./tasks', str(ctx.exception))
 
-    def test_any_dots_fail(self):
+    def test_any_dots_in_the_path_fail(self):
         with self.assertRaises(Exception) as ctx:
             self.validator.validate_url('/todo/./tasks')
         self.assertEqual('Invalid URL: /todo/./tasks', str(ctx.exception))
+
+    def test_path_with_no_name_fails(self):
+        with self.assertRaises(Exception) as ctx:
+            self.validator.validate_url('/todo/tasks/')
+        self.assertEqual('Invalid URL: /todo/tasks/', str(ctx.exception))
 
     def test_non_alphanumeric_fails(self):
         with self.assertRaises(Exception) as ctx:
             self.validator.validate_url('/t!do/tasks')
         self.assertEqual('Invalid URL: /t!do/tasks', str(ctx.exception))
+
+    def test_example1(self):
+        try:
+            self.validator.validate_url('/static/css/main.0ebde3ef.chunk.css')
+        except Exception:
+            self.fail("myFunc() raised ExceptionType unexpectedly!")
 
     # Support code
 

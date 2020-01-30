@@ -8,41 +8,19 @@ from filepathhandler import FilePathHandler
 
 class TestFilePathHandler(unittest.TestCase):
     def setUp(self):
-#        self.set_up_mocks()
-#        self.set_up_data()
         self.set_up_object_under_test()
-#        self.set_up_expectations()
 
-    def test_simple_file_name_is_appended_to_base_path(self):
-        path = self.handler.generate_path('simple.path')
-        self.assertEqual('base path/simple.path', path)
+    def test_file_name_is_appended_to_base_path(self):
+        path = self.handler.generate_path('file.name')
+        self.assertEqual('base path/file.name', path)
 
     def test_simple_file_path_is_appended_to_base_path(self):
         path = self.handler.generate_path('folder/simple.path')
         self.assertEqual('base path/folder/simple.path', path)
 
-    def test_a_leading_slash_is_accepted(self):
-        path = self.handler.generate_path('/folder/simple.path')
-        self.assertEqual('base path/folder/simple.path', path)
-
-    def test_multiple_leading_slashes_are_accepted(self):
-        path = self.handler.generate_path('/////folder/simple.path')
-        self.assertEqual('base path/folder/simple.path', path)
-
-    def test_leading_dots_are_rejected(self):
-        with self.assertRaises(Exception) as ctx:
-            self.handler.generate_path('../simple.path')
-        self.assertEqual('Path not found: ../simple.path', str(ctx.exception))
-
-    def test_middle_dots_are_rejected(self):
-        with self.assertRaises(Exception) as ctx:
-            self.handler.generate_path('f/../simple.path')
-        self.assertEqual('Path not found: f/../simple.path', str(ctx.exception))
-
-    def test_only_simple_characters_are_accepted(self):
-        with self.assertRaises(Exception) as ctx:
-            self.handler.generate_path('~/folder/simple.path')
-        self.assertEqual('Path not found: ~/folder/simple.path', str(ctx.exception))
+    def test_path_handler_does_no_path_validation(self):
+        path = self.handler.generate_path('/../!!!.path')
+        self.assertEqual('base path/../!!!.path', path)
 
     def test_missing_paths_become_index(self):
         path = self.handler.generate_path('')
@@ -54,27 +32,6 @@ class TestFilePathHandler(unittest.TestCase):
 
     # Support code
 
-    # def set_up_mocks(self):
-    #     self.factory = Factory()
-    #     self.mock_url_dissector = MagicMock()
-    #     self.mock_url_dissector.dissect_url = MagicMock()
-    #     self.factory.register('UrlDissector', self.mock_url_dissector)
-    #     self.mock_url_router = MagicMock()
-    #     self.factory.register('UrlRouter', self.mock_url_router)
-
-    # def set_up_data(self):
-    #     self.url = 'test url'
-    #     self.http_request = 'http request'
-    #     self.dissected_url = 'dissected url'
-
     def set_up_object_under_test(self):
         self.handler = FilePathHandler('base path')
 
-    # def set_up_expectations(self):
-    #     self.mock_url_dissector.dissect_url.side_effect = self.dissect_url
-
-    # def dissect_url(self, url):
-    #     if url == self.url:
-    #         return self.dissected_url
-    #     else:
-    #         return 'something else'

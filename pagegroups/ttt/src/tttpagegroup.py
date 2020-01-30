@@ -33,7 +33,6 @@ class TickTackToePageGroup(object):
 
     def process_request(self, page_group_url, request):
         try:
-            print('ttt request', page_group_url, '||||', request)
             rest = self.urlparser.parse_url(request.url)
             if (rest):
                 pass

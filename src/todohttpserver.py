@@ -6,6 +6,7 @@ import os
 import traceback
 from httpserverwrapper import HTTPServerWrapper
 from requestobject import RequestObject
+from todoexception import ToDoException
 
 class MyHandler(BaseHTTPRequestHandler):
 	def do_GET(self):
@@ -75,6 +76,16 @@ class MyHandler(BaseHTTPRequestHandler):
 #			response = json.dumps(je)
 #			self.end_headers()
 #			self.wfile.write(response)
+
+		except ToDoException as e:
+			self.logger.log('ToDoException: %s' % (str(e)))
+			self.logger.error('ToDoException: %s' % (str(e)))
+
+			self.send_response(500)
+			response = 'exception'
+			self.end_headers()
+			self.write_text(response)
+			return
 
 		except Exception as e:
 			self.logger.error('Exception: %s' % (str(e)))

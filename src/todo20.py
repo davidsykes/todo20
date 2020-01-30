@@ -45,7 +45,7 @@ try:
 
 	factory.register('UrlValidator', UrlValidator())
 	factory.register('UrlDissector', UrlDissector())
-	factory.register('UrlRouter', UrlRouter(DefaultDestination('/home/dev/Documents/todo20/www')))
+	factory.register('UrlRouter', UrlRouter(DefaultDestination(factory, '/home/dev/Documents/todo20/www')))
 	factory.register('RestHandler', RestHandler(factory))
 
 	factory.fetch('UrlRouter').register_destination('test', TestPageGroup('/home/dev/Documents/todo20/pagegroups/testpagegroup/pages'))
