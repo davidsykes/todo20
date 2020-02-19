@@ -17,7 +17,7 @@ DAILY_LOG_NAME = 'tttpageslog'
 DAILY_LOG_EXT = 'log'
 DAILY_ERR_EXT = 'err'
 
-class TickTackToePageGroup(object):
+class TickTackToePagegroup(object):
     def __init__(self, www_path):
         self.factory = Factory()
         self.factory.register('DateTimeWrapper', DateTimeWrapper())
@@ -31,14 +31,14 @@ class TickTackToePageGroup(object):
         self.logger = LogChainer(daily_logger)
         self.logger.chain(ConsoleLogger(True))
 
-    def process_request(self, page_group_url, request):
+    def process_request(self, pagegroup_url, request):
         try:
             rest = self.urlparser.parse_url(request.url)
             if (rest):
                 pass
                 return
 
-            path = self.filepathhandler.generate_path(page_group_url)
+            path = self.filepathhandler.generate_path(pagegroup_url)
             request.server.write_file(path)
 
         except Exception as e:

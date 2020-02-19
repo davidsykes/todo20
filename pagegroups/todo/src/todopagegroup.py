@@ -13,11 +13,11 @@ from datetime_wrapper import DateTimeWrapper
 from fs_wrapper import FsWrapper
 from console_logger import ConsoleLogger
 
-DAILY_LOG_NAME = 'testpageslog'
+DAILY_LOG_NAME = 'tttpageslog'
 DAILY_LOG_EXT = 'log'
 DAILY_ERR_EXT = 'err'
 
-class TestPagegroup(object):
+class ToDoPagegroup(object):
     def __init__(self, www_path):
         self.factory = Factory()
         self.factory.register('DateTimeWrapper', DateTimeWrapper())
@@ -33,12 +33,13 @@ class TestPagegroup(object):
 
     def process_request(self, pagegroup_url, request):
         try:
+            print('todo request', request.url)
             rest = self.urlparser.parse_url(request.url)
             if (rest):
                 pass
                 return
 
-            path = self.filepathhandler.generate_path(request.url)
+            path = self.filepathhandler.generate_path(pagegroup_url)
             request.server.write_file(path)
 
         except Exception as e:

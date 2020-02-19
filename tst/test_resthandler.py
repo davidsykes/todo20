@@ -20,38 +20,36 @@ class TestRestHandler(unittest.TestCase):
 
     def test_handle_request_passes_url_to_url_disector(self):
         self.handler.handle_request(self.url, self.http_request)
-        self.mock_url_dissector.dissect_url.assert_called_once_with(self.url)
+        self.mock_pagegroup_extractor.extract_pagegroup.assert_called_once_with(self.url)
 
     def test_handle_request_passes_disector_response_and_request_to_router(self):
         self.handler.handle_request(self.url, self.http_request)
-        self.mock_url_router.route_request.assert_called_once_with(self.dissected_url, self.http_request)
+        self.mock_url_router.route_request.assert_called_once_with(self.extracted_pagegroup, self.http_request)
 
     # Support code
 
     def set_up_mocks(self):
         self.factory = Factory()
         self.mock_url_validator = MagicMock()
-        #self.mock_url_validator.validate_url = MagicMock()
         self.factory.register('UrlValidator', self.mock_url_validator)
-        self.mock_url_dissector = MagicMock()
-        #self.mock_url_dissector.dissect_url = MagicMock()
-        self.factory.register('UrlDissector', self.mock_url_dissector)
+        self.mock_pagegroup_extractor = MagicMock()
+        self.factory.register('UrlPagegroupExtractor', self.mock_pagegroup_extractor)
         self.mock_url_router = MagicMock()
         self.factory.register('UrlRouter', self.mock_url_router)
 
     def set_up_data(self):
         self.url = 'test url'
         self.http_request = 'http request'
-        self.dissected_url = 'dissected url'
+        self.extracted_pagegroup = 'extracted page group'
 
     def set_up_object_under_test(self):
         self.handler = RestHandler(self.factory)
 
     def set_up_expectations(self):
-        self.mock_url_dissector.dissect_url.side_effect = self.dissect_url
+        self.mock_pagegroup_extractor.extract_pagegroup.side_effect = self.extract_pagegroup
 
-    def dissect_url(self, url):
+    def extract_pagegroup(self, url):
         if url == self.url:
-            return self.dissected_url
+            return self.extracted_pagegroup
         else:
             return None

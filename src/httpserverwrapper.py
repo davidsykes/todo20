@@ -1,4 +1,5 @@
 import os
+from todoexception import ToDoException
 
 class HTTPServerWrapper(object):
     def __init__(self, http_server):
@@ -31,7 +32,7 @@ class HTTPServerWrapper(object):
 
     def write_file(self, path):
         if not os.path.isfile(path):
-            raise Exception('path not found: %s' % (path))
+            raise ToDoException('Requested file path not found: %s' % (path))
         extension = os.path.splitext(path)[1]
         content_type = self.get_content_type(extension)
         f = open(path,"rb")

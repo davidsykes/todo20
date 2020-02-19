@@ -8,8 +8,8 @@ class UrlRouter(object):
     def register_destination(self, command, destination):
         self.destinations[command] = destination
 
-    def route_request(self, dissected_url, request):
-        destination, parameters = self.get_destination(dissected_url)
+    def route_request(self, extracted_pagegroup, request):
+        destination, parameters = self.get_destination(extracted_pagegroup)
         destination.process_request(parameters, request)
 
     def get_destination(self, url):

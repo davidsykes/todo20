@@ -7,9 +7,9 @@ class DefaultDestination(object):
         self.filepathhandler = FilePathHandler(www_path)
         self.logger = factory.fetch('Logger')
 
-    def process_request(self, page_group_url, request):
+    def process_request(self, pagegroup_url, request):
         #try:
-            path = self.filepathhandler.generate_path(page_group_url)
+            path = self.filepathhandler.generate_path(pagegroup_url)
             request.server.write_file(path)
         #except Exception as e:
         #    self.logger.error('Exception: %s' % (str(e)))
