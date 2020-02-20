@@ -12,7 +12,7 @@ from dailyfilewriter import DailyFileWriter
 from logger import Logger
 from todohttpserver import ToDoHTTPServer
 from factory import Factory
-from resthandler import RestHandler
+from urlrequesthandler import UrlRequestHandler
 from urlvalidator import UrlValidator
 from urlpagegroupextractor import UrlPagegroupExtractor
 from urlrouter import UrlRouter
@@ -23,9 +23,11 @@ sys.path.append('../pagegroups/testpagegroup/src')
 from pagegroup import TestPagegroup
 sys.path.append('../pagegroups/ttt/src')
 from tttpagegroup import TickTackToePagegroup
+sys.path.append('../pagegroups/todo/src')
+from todopagegroup import ToDoPagegroup
 
 rvPermanentError = 9
-DAILY_LOG_NAME = 'todolog'
+DAILY_LOG_NAME = 'applicationlog'
 DAILY_LOG_EXT = 'log'
 DAILY_ERR_EXT = 'err'
 
@@ -46,10 +48,11 @@ try:
 	factory.register('UrlValidator', UrlValidator())
 	factory.register('UrlPagegroupExtractor', UrlPagegroupExtractor())
 	factory.register('UrlRouter', UrlRouter(DefaultDestination(factory, '/home/dev/Documents/todo20/www')))
-	factory.register('RestHandler', RestHandler(factory))
+	factory.register('UrlRequestHandler', UrlRequestHandler(factory))
 
 	factory.fetch('UrlRouter').register_destination('test', TestPagegroup('/home/dev/Documents/todo20/pagegroups/testpagegroup/pages'))
 	factory.fetch('UrlRouter').register_destination('ttt', TickTackToePagegroup('/home/dev/Documents/react/my-app/build'))
+	factory.fetch('UrlRouter').register_destination('todo', ToDoPagegroup('/home/dev/Documents/react/my-app/build'))
 
 	httpserver = ToDoHTTPServer(factory, logger)
 

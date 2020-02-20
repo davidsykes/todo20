@@ -16,70 +16,13 @@ class MyHandler(BaseHTTPRequestHandler):
 
 			wrapper = HTTPServerWrapper(self)
 			request = RequestObject.create_get_request(url, wrapper)
-			self.rest_handler.handle_request(url, request)
-
-
-# 			# Return html, css or js files direction
-# 			if ((len(self.path) > 5) and ((self.path[-5:] == '.html') or (self.path[-4:] == '.css') or (self.path[-3:] == '.js'))):
-# 				f = open("."+self.path,"rb")
-# 				self.send_response(200)
-# 				if self.path[-4:] == '.css':
-# 					self.send_header('Content-type', 'text/css')
-# 				else:
-# 					self.send_header('Content-type', 'text/html')
-# 				self.end_headers()
-# 				self.wfile.write(f.read())
-# 				f.close()
-# 				return
-
-# #------------- *.png/ico/jpg -----------------------
-# 			elif self.path.lower().endswith(".png") or self.path.lower().endswith(".ico") or self.path.lower().endswith(".jpg") or self.path.lower().endswith(".woff") or self.path.lower().endswith(".tff"):
-# 				path = None
-# 				if os.path.isfile("."+self.path):
-# 					path = "."+self.path
-# 				elif os.path.isfile("./Icons"+self.path):
-# 					path = "./Icons"+self.path
-# 				if path:
-# 					f = open(path,"rb")
-# 					self.send_response(200)
-# 					if self.path.lower().endswith(".jpg"):
-# 						self.send_header('Content-type', 'image/jpg')
-# 					else:
-# 						self.send_header('Content-type', 'image/png')
-# 					self.end_headers()
-# 					self.wfile.write(f.read())
-# 					f.close()
-# 				else:
-# 					print ('404:', self.path)
-# 					self.send_response(404)
-# 					self.end_headers()
-# 					self.wfile.write("Not Found: %s" % self.path)
-# 				return
-
-# #------------- Home or unrecognised -----------------------
-# 			else:
-# 				self.EndHeaders()
-# 				message = None
-# 				if self.path != '/Home' and self.path != '/' and self.path != '/m':
-# 					print ('Unrecognised url', self.path)
-# 					message = self.path
+			self.url_request_handler.handle_request(url, request)
 			return
-
-
-#		except JukeboxException as e:
-#			print 'JukeboxException "', str(e), '"', e.value
-#			je = {}
-#			je['exception'] = True
-#			je['message'] = e.value
-#			je['message'] = je['message'] + "\n\n" + traceback.format_exc(10)
-#			self.send_response(505)
-#			response = json.dumps(je)
-#			self.end_headers()
-#			self.wfile.write(response)
 
 		except ToDoException as e:
 			self.logger.log('ToDoException: %s' % (str(e)))
 			self.logger.error('ToDoException: %s' % (str(e)))
+			self.logger.log('Stack: %s' % (traceback.format_exc(10)))
 
 			self.send_response(500)
 			response = 'exception'
@@ -97,14 +40,6 @@ class MyHandler(BaseHTTPRequestHandler):
 			self.end_headers()
 			self.write_text(response)
 			return
-
-#		except IOError, e:
-#			print 'Exception!'
-#			print 'File Not Found: %s %s' % (self.path, str(e))
-#			self.send_error(404,'File Not Found: %s %s' % (self.path, str(e)))
-#		except SQLiteDatabaseError, e:
-#			print 'Exception!'
-#			print 'SQLiteDatabaseError', e, e.value
 
 	def do_POST(self):
 		print ('POST:', self.path)
@@ -158,5 +93,5 @@ class ToDoHTTPServer(threading.Thread):
 		self.logger.log('started httpserver...')
 		MyHandler.factory = self.factory
 		MyHandler.logger = self.logger
-		MyHandler.rest_handler = self.factory.fetch('RestHandler')
+		MyHandler.url_request_handler = self.factory.fetch('UrlRequestHandler')
 		server.serve_forever()

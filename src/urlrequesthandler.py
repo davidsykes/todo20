@@ -1,6 +1,6 @@
 
 
-class RestHandler(object):
+class UrlRequestHandler(object):
     def __init__(self, factory):
         self.url_validator = factory.fetch('UrlValidator')
         self.url_pagegroup_extractor = factory.fetch('UrlPagegroupExtractor')

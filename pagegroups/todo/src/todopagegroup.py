@@ -13,7 +13,7 @@ from datetime_wrapper import DateTimeWrapper
 from fs_wrapper import FsWrapper
 from console_logger import ConsoleLogger
 
-DAILY_LOG_NAME = 'tttpageslog'
+DAILY_LOG_NAME = 'todopageslog'
 DAILY_LOG_EXT = 'log'
 DAILY_ERR_EXT = 'err'
 
@@ -32,7 +32,7 @@ class ToDoPagegroup(object):
         self.logger.chain(ConsoleLogger(True))
 
     def process_request(self, pagegroup_url, request):
-        try:
+        #try:
             print('todo request', request.url)
             rest = self.urlparser.parse_url(request.url)
             if (rest):
@@ -42,9 +42,9 @@ class ToDoPagegroup(object):
             path = self.filepathhandler.generate_path(pagegroup_url)
             request.server.write_file(path)
 
-        except Exception as e:
-            self.logger.log('Exception: %s' % (str(e)))
-            self.logger.log('Path: %s' % (request.url))
-            self.logger.log('Stack: %s' % (traceback.format_exc(10)))
+        #except Exception as e:
+        #    self.logger.log('Exception: %s' % (str(e)))
+        #    self.logger.log('Path: %s' % (request.url))
+        #    self.logger.log('Stack: %s' % (traceback.format_exc(10)))
 
-            request.server.write_text_response(500, 'exception')
+        #    request.server.write_text_response(500, 'exception')

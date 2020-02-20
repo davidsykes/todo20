@@ -3,11 +3,11 @@ import sys
 sys.path.append('../src')
 sys.path.append('../../temperatures/Library/src')
 from unittest.mock import MagicMock
-from resthandler import RestHandler
+from urlrequesthandler import UrlRequestHandler
 from factory import Factory
 
 
-class TestRestHandler(unittest.TestCase):
+class TestUrlRequestHandler(unittest.TestCase):
     def setUp(self):
         self.set_up_mocks()
         self.set_up_data()
@@ -43,7 +43,7 @@ class TestRestHandler(unittest.TestCase):
         self.extracted_pagegroup = 'extracted page group'
 
     def set_up_object_under_test(self):
-        self.handler = RestHandler(self.factory)
+        self.handler = UrlRequestHandler(self.factory)
 
     def set_up_expectations(self):
         self.mock_pagegroup_extractor.extract_pagegroup.side_effect = self.extract_pagegroup
