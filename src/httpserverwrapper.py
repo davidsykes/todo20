@@ -15,17 +15,16 @@ class HTTPServerWrapper(object):
             '.jpg': 'text/jpg',
             }
 
-    def send_code(self, code):
+
+    def server_response_json(self, json):
+        self.http_server.send_code(200)
+        self.http_server.send_header('Content-type','text/json')
+        self.http_server.end_headers()
+        self.http_server.write_text(json)
+
+    def server_response_text(self, code, response):
         self.http_server.send_code(code)
-
-    def send_text_header(self):
-        self.http_server.send_text_header()
-
-    def write_text(self, text):
-        self.http_server.write_text(text)
-
-    def write_text_response(self, code, response):
-        self.http_server.send_code(code)
+        self.send_header('Content-type','text/html')
         self.http_server.end_headers()
         self.http_server.write_text(response)
         return

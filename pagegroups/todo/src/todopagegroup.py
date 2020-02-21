@@ -3,7 +3,6 @@ import traceback
 sys.path.append('../../../src')
 sys.path.append('../../../../temperatures/Library/src')
 
-from urlparser import UrlParser
 from filepathhandler import FilePathHandler
 from factory import Factory
 from logger import Logger
@@ -12,6 +11,7 @@ from dailyfilewriter import DailyFileWriter
 from datetime_wrapper import DateTimeWrapper
 from fs_wrapper import FsWrapper
 from console_logger import ConsoleLogger
+from restcommandparser import RestCommandParser
 
 DAILY_LOG_NAME = 'todopageslog'
 DAILY_LOG_EXT = 'log'
@@ -22,7 +22,7 @@ class ToDoPagegroup(object):
         self.factory = Factory()
         self.factory.register('DateTimeWrapper', DateTimeWrapper())
         self.factory.register('FsWrapper', FsWrapper())
-        self.urlparser = UrlParser()
+        self.restcommandparser = RestCommandParser()
         self.filepathhandler = FilePathHandler(www_path)
 
         daily_log_writer = DailyFileWriter(self.factory, DAILY_LOG_NAME, DAILY_LOG_EXT)
@@ -32,19 +32,14 @@ class ToDoPagegroup(object):
         self.logger.chain(ConsoleLogger(True))
 
     def process_request(self, pagegroup_url, request):
-        #try:
-            print('todo request', request.url)
-            rest = self.urlparser.parse_url(request.url)
-            if (rest):
-                pass
-                return
-
+        self.logger.log('ToDo request: %s' % pagegroup_url)
+        command = self.restcommandparser.parse_rest_command(pagegroup_url)
+        if command is not None:
+            self.handle_command(request, command)
+        else:
             path = self.filepathhandler.generate_path(pagegroup_url)
             request.server.write_file(path)
 
-        #except Exception as e:
-        #    self.logger.log('Exception: %s' % (str(e)))
-        #    self.logger.log('Path: %s' % (request.url))
-        #    self.logger.log('Stack: %s' % (traceback.format_exc(10)))
-
-        #    request.server.write_text_response(500, 'exception')
+    def handle_command(self, request, command):
+        if command.Command == 'tasks':
+            request.server.server_response_json("[{'task':'do'},{'task':'something'}]")

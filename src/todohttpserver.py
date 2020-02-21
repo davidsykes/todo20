@@ -63,20 +63,30 @@ class MyHandler(BaseHTTPRequestHandler):
 			self.end_headers()
 			self.wfile.write(response)
 
+
+	# region wrapper
+
+	def send_code(self, response):
+		self.send_response(response)
+
+	def send_header(self, content, type):
+		super().send_header(content, type)
+
+	def end_headers(self):
+		super().end_headers()
+
+	def write_text(self, data):
+		self.wfile.write(data.encode())
+
+	# end region
+
+
+
 	def EndHeaders(self):
 		self.send_response(200)
 		self.send_header('Content-type',	'text/html')
 		self.end_headers()
 
-	def send_code(self, response):
-		self.send_response(response)
-
-	def send_text_header(self):
-		self.send_header('Content-type',	'text/html')
-		self.end_headers()
-
-	def write_text(self, data):
-		self.wfile.write(data.encode())
 
 
 class ToDoHTTPServer(threading.Thread):

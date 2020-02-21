@@ -4,7 +4,6 @@ sys.path.append('../src')
 from unittest.mock import MagicMock
 from filepathhandler import FilePathHandler
 
-
 class TestFilePathHandler(unittest.TestCase):
     def setUp(self):
         self.set_up_object_under_test()

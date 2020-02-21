@@ -3,7 +3,6 @@ import traceback
 sys.path.append('../../../src')
 sys.path.append('../../../../temperatures/Library/src')
 
-from urlparser import UrlParser
 from filepathhandler import FilePathHandler
 from factory import Factory
 from logger import Logger
@@ -22,7 +21,6 @@ class TestPagegroup(object):
         self.factory = Factory()
         self.factory.register('DateTimeWrapper', DateTimeWrapper())
         self.factory.register('FsWrapper', FsWrapper())
-        self.urlparser = UrlParser()
         self.filepathhandler = FilePathHandler(www_path)
 
         daily_log_writer = DailyFileWriter(self.factory, DAILY_LOG_NAME, DAILY_LOG_EXT)
@@ -33,11 +31,6 @@ class TestPagegroup(object):
 
     def process_request(self, pagegroup_url, request):
         try:
-            rest = self.urlparser.parse_url(request.url)
-            if (rest):
-                pass
-                return
-
             path = self.filepathhandler.generate_path(request.url)
             request.server.write_file(path)
 
@@ -46,4 +39,4 @@ class TestPagegroup(object):
             self.logger.log('Path: %s' % (request.url))
             self.logger.log('Stack: %s' % (traceback.format_exc(10)))
 
-            request.server.write_text_response(500, 'exception')
+            request.server.server_response_text(500, 'exception')
