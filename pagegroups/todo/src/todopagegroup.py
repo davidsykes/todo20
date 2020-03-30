@@ -12,6 +12,7 @@ from datetime_wrapper import DateTimeWrapper
 from fs_wrapper import FsWrapper
 from console_logger import ConsoleLogger
 from restcommandparser import RestCommandParser
+from taskreloader import TaskReloader
 
 DAILY_LOG_NAME = 'todopageslog'
 DAILY_LOG_EXT = 'log'
@@ -24,6 +25,7 @@ class ToDoPagegroup(object):
         self.factory.register('FsWrapper', FsWrapper())
         self.restcommandparser = RestCommandParser()
         self.filepathhandler = FilePathHandler(www_path)
+        self.tesk_reloader = TaskReloader()
 
         daily_log_writer = DailyFileWriter(self.factory, DAILY_LOG_NAME, DAILY_LOG_EXT)
         daily_err_writer = DailyFileWriter(self.factory, DAILY_LOG_NAME, DAILY_ERR_EXT)
@@ -41,5 +43,7 @@ class ToDoPagegroup(object):
             request.server.write_file(path)
 
     def handle_command(self, request, command):
-        if command.Command == 'tasks':
-            request.server.server_response_json("[{'task':'do'},{'task':'something'}]")
+        if command.Command == 'reloadtasks':
+            self.tesk_reloader.reload_tasks
+        else:
+            request.server.server_response_json('[{"task":"do"},{"task":"something"}]')

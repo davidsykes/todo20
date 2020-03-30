@@ -42,26 +42,36 @@ class MyHandler(BaseHTTPRequestHandler):
 			return
 
 	def do_POST(self):
-		print ('POST:', self.path)
 		try:
-			returnvalue = 'urg'
-			self.send_response(200)
-			print ('Send response 200')
-			self.send_header('Content-type',	'text/json')
+			url = self.path
+			self.logger.log('Post: %s from %s' % (url, self.client_address[0]))
+
+			wrapper = HTTPServerWrapper(self)
+			request = RequestObject.create_post_request(url, wrapper)
+			self.url_request_handler.handle_request(url, request)
+			return
+
+		except ToDoException as e:
+			self.logger.log('ToDoException: %s' % (str(e)))
+			self.logger.error('ToDoException: %s' % (str(e)))
+			self.logger.log('Stack: %s' % (traceback.format_exc(10)))
+
+			self.send_response(500)
+			response = 'exception'
 			self.end_headers()
-			self.wfile.write(returnvalue)
+			self.write_text(response)
+			return
 
 		except Exception as e:
-			print ('POST EXCEPTION', e)
-			print ('path', self.path)
-			je = {}
-			je['exception'] = True
-			je['message'] = str(e)
-			je['message'] = je['message'] + "\n" + traceback.format_exc(10)
+			self.logger.error('Exception: %s' % (str(e)))
+			self.logger.error('Path: %s' % (self.path))
+			self.logger.error('Stack: %s' % (traceback.format_exc(10)))
+
 			self.send_response(500)
-			response = json.dumps(je)
+			response = 'exception'
 			self.end_headers()
-			self.wfile.write(response)
+			self.write_text(response)
+			return
 
 
 	# region wrapper

@@ -3,6 +3,7 @@ from enum import Enum
 class RequestObjectType(Enum):
     get = 1
     put = 2
+    post = 3
 
 
 class RequestObject(object):
@@ -14,3 +15,8 @@ class RequestObject(object):
     @staticmethod
     def create_get_request(url, server):
         return RequestObject(RequestObjectType.get, url, server)
+
+    @staticmethod
+    def create_post_request(url, server):
+        return RequestObject(RequestObjectType.post, url, server)
+

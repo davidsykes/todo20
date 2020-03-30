@@ -18,7 +18,8 @@ class HTTPServerWrapper(object):
 
     def server_response_json(self, json):
         self.http_server.send_code(200)
-        self.http_server.send_header('Content-type','text/json')
+        self.http_server.send_header('Content-type','application/json')
+        self.http_server.send_header('Access-Control-Allow-Origin', '*')
         self.http_server.end_headers()
         self.http_server.write_text(json)
 
