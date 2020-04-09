@@ -18,6 +18,7 @@ from urlpagegroupextractor import UrlPagegroupExtractor
 from urlrouter import UrlRouter
 from defaultdestination import DefaultDestination
 from dailyfilewriter import DailyFileWriter
+from configurationparser import ConfigurationParser
 
 sys.path.append('../pagegroups/testpagegroup/src')
 from pagegroup import TestPagegroup
@@ -31,6 +32,9 @@ DAILY_LOG_NAME = 'applicationlog'
 DAILY_LOG_EXT = 'log'
 DAILY_ERR_EXT = 'err'
 
+def fetch_configurations(config_path):
+	config = open(config_path, "r").read()
+	return ConfigurationParser().parse_configuration(config)
 
 try:
 	factory = Factory()
@@ -50,11 +54,16 @@ try:
 	factory.register('UrlRouter', UrlRouter(DefaultDestination(factory, '/home/dev/Documents/todo20/www')))
 	factory.register('UrlRequestHandler', UrlRequestHandler(factory))
 
+	configurations = fetch_configurations('config.cfg')
+
 	factory.fetch('UrlRouter').register_destination('test', TestPagegroup('/home/dev/Documents/todo20/pagegroups/testpagegroup/pages'))
 	factory.fetch('UrlRouter').register_destination('ttt', TickTackToePagegroup('/home/dev/Documents/react/my-app/build'))
-	factory.fetch('UrlRouter').register_destination('todo', ToDoPagegroup('/home/dev/Documents/react/my-app/build'))
 
-	httpserver = ToDoHTTPServer(factory, logger)
+	todo_configurations = configurations['ToDo']
+
+	factory.fetch('UrlRouter').register_destination('todo', ToDoPagegroup(todo_configurations))
+
+	httpserver = ToDoHTTPServer(factory)
 
 	while True:
 		time.sleep(1)

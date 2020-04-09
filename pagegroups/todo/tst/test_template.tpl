@@ -23,7 +23,7 @@ class TestClassToTest(unittest.TestCase):
         self.mock_1 = MagicMock()
 
     def set_up_data(self):
-        self.date = 'data'
+        self.data = 'data'
 
     def set_up_object_under_test(self):
         self.class_to_test = ClassToTest()

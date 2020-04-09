@@ -20,7 +20,8 @@ class GoDaddyTaskRetriever(object):
         return tasks
 
 
-r = GoDaddyTaskRetriever()
-tasks = r.retrieve_godaddy_tasks()
-for t in tasks:
-    print t
+if __name__ == "__main__":
+    r = GoDaddyTaskRetriever()
+    tasks = r.retrieve_godaddy_tasks()
+    for t in tasks:
+        print(t)

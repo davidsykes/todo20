@@ -100,9 +100,9 @@ class MyHandler(BaseHTTPRequestHandler):
 
 
 class ToDoHTTPServer(threading.Thread):
-	def __init__(self, factory, logger):
+	def __init__(self, factory):
 		self.factory = factory
-		self.logger = logger
+		self.logger = factory.fetch('Logger')
 		threading.Thread.__init__(self, name='ToDo20')
 		self.setDaemon(True)
 		self.start()
