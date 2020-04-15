@@ -18,6 +18,10 @@ class TestClassToTest(unittest.TestCase):
         self.task_reloader.reload_tasks()
         self.mock_godaddy_tasks_merger.merge_godaddy_tasks.assert_called_once_with(self.godaddy_tasks)
 
+    def test_reload_tasks_logs_action(self):
+        self.task_reloader.reload_tasks()
+        self.mock_logger.log.assert_called_once_with('Reload GoDaddy Tasks')
+
     # Support code
 
     def set_up_mocks(self):
@@ -26,6 +30,8 @@ class TestClassToTest(unittest.TestCase):
         self.factory.register('GoDaddyTaskRetriever', self.mock_godaddy_task_retriever)
         self.mock_godaddy_tasks_merger = MagicMock()
         self.factory.register('GoDaddyTasksMerger', self.mock_godaddy_tasks_merger)
+        self.mock_logger = MagicMock()
+        self.factory.register('Logger', self.mock_logger)
 
     def set_up_data(self):
         self.godaddy_tasks = 'godaddy tasks'

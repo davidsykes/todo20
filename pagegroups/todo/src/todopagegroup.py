@@ -19,6 +19,7 @@ from godaddytaskmerger import GoDaddyTaskMerger
 from godaddytasksmerger import GoDaddyTasksMerger
 from taskdataaccess import TaskDataAccess
 from sqlite_database import SQLiteDatabase
+from migration_runner import MigrationRunner
 
 DAILY_LOG_NAME = 'todopageslog'
 DAILY_LOG_EXT = 'log'
@@ -31,24 +32,32 @@ class ToDoPagegroup(object):
 
         self.factory.register('DateTimeWrapper', DateTimeWrapper())
         self.factory.register('FsWrapper', FsWrapper())
-        self.set_up_database(configurations['DatabasePath'])
+        self.set_up_database(configurations['DatabasePath'], configurations['MigrationsPath'])
         self.factory.register('TaskDataAccess', TaskDataAccess(self.factory))
         self.factory.register('GoDaddyTaskRetriever', GoDaddyTaskRetriever())
-        self.factory.register('GoDaddyTaskMerger', GoDaddyTaskMerger(self.factory))
-        self.factory.register('GoDaddyTasksMerger', GoDaddyTasksMerger(self.factory))
         self.restcommandparser = RestCommandParser()
         self.filepathhandler = FilePathHandler(www_path)
-        self.tesk_reloader = TaskReloader(self.factory)
 
         daily_log_writer = DailyFileWriter(self.factory, DAILY_LOG_NAME, DAILY_LOG_EXT)
         daily_err_writer = DailyFileWriter(self.factory, DAILY_LOG_NAME, DAILY_ERR_EXT)
         daily_logger = Logger(self.factory, daily_log_writer, daily_err_writer)
         self.logger = LogChainer(daily_logger)
         self.logger.chain(ConsoleLogger(True))
+        self.factory.register('Logger', self.logger)
 
-    def set_up_database(self, database_path):
-        database = SQLiteDatabase(sqlite3.connect(database_path, check_same_thread = False))
-        self.factory.register('Database', database)
+        self.factory.register('GoDaddyTaskMerger', GoDaddyTaskMerger(self.factory))
+        self.factory.register('GoDaddyTasksMerger', GoDaddyTasksMerger(self.factory))
+        self.tesk_reloader = TaskReloader(self.factory)
+
+    def set_up_database(self, database_path, migrations_folder_path):
+        try:
+            database = SQLiteDatabase(sqlite3.connect(database_path, check_same_thread = False))
+            self.factory.register('Database', database)
+            migration_runner = MigrationRunner(self.factory, migrations_folder_path)
+            migration_runner.run_migrations()
+        except Exception as e:
+            print("Exception setting up database '%s'" % (database_path))
+            raise
 
     def process_request(self, pagegroup_url, request):
         self.logger.log('ToDo request: %s' % pagegroup_url)

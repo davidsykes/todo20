@@ -20,7 +20,9 @@ class TestClassToTest(unittest.TestCase):
     # Support code
 
     def set_up_mocks(self):
+        self.factory = Factory()
         self.mock_1 = MagicMock()
+        self.factory.register('Mock', self.mock_1)
 
     def set_up_data(self):
         self.data = 'data'

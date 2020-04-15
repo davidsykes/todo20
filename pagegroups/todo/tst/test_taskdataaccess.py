@@ -21,14 +21,16 @@ class TestTaskDataAccess(unittest.TestCase):
     def test_create_task_creates_new_task(self):
         self.task_data_access.create_task(self.task)
 
-        self.mock_sqlite_database.execute_with_commit.assert_called_with(self.create_task_sql)
+        self.assertEqual(self.sql_to_create_task, self.sqlite_database_execute_with_commit_query)
+        expected_params = ('Task Title','Task Detail',0,datetime.datetime(2020,3,15,12,34,56),'101',1.23,42)
+        self.assertEqual(expected_params, self.sqlite_database_execute_with_commit_params)
 
     # Retrieve go daddy task
 
     def test_retrieve_godaddy_task_retrieves_godaddy_task(self):
         self.task_data_access.retrieve_godaddy_task(123)
 
-        query = 'SELECT ' + self.task_fields + 'FROM Tasks WHERE GoDaddyId=123'
+        query = 'SELECT ' + self.task_fields + ' FROM Tasks WHERE GoDaddyId=123'
 
         self.mock_sqlite_database.query.assert_called_with(query)
 
@@ -46,12 +48,16 @@ class TestTaskDataAccess(unittest.TestCase):
         self.task.godaddy_id = 42
         self.task.contexts = '101'
         self.task.due = datetime.datetime(2020, 3, 15, 12, 34, 56)
-        self.create_task_sql = "INSERT INTO Tasks (" + self.task_fields + ") VALUES ('Task Title','Task Detail',0,2020-03-15 12:34:56,'101',1.230000,42)"
+        self.sql_to_create_task = 'INSERT INTO Tasks (' + self.task_fields + ') VALUES (?,?,?,?,?,?,?)'
 
     def set_up_object_under_test(self):
         self.task_data_access = TaskDataAccess(self.factory)
 
     def set_up_expectations(self):
-        pass
+        self.mock_sqlite_database.execute_with_commit = MagicMock(side_effect = self.sqlite_database_execute_with_commit)
+    
+    def sqlite_database_execute_with_commit(self, sql, params):
+        self.sqlite_database_execute_with_commit_query = sql
+        self.sqlite_database_execute_with_commit_params = params        
 
 
