@@ -8,7 +8,7 @@ class ToDoTask(object):
         task = ToDoTask()
         task.title = title
         task.detail = detail
-        task.id = None
+        task.task_id = None
         task.done = False
         task.position = None
         task.godaddy_id = None

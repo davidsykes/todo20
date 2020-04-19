@@ -1,7 +1,6 @@
 import unittest
 import sys
 sys.path.append('../src')
-sys.path.append('../../temperatures/Library/src')
 from unittest.mock import MagicMock
 from class_to_test import ClassToTest
 

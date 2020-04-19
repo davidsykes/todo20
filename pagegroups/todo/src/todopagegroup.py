@@ -1,11 +1,12 @@
 import sys
 import traceback
 import sqlite3
+import json
 sys.path.append('../../../src')
-sys.path.append('../../../../temperatures/Library/src')
+sys.path.append('../../../Library/src')
 
 from filepathhandler import FilePathHandler
-from factory import Factory
+from staticfactory import StaticFactory
 from logger import Logger
 from logchainer import LogChainer
 from dailyfilewriter import DailyFileWriter
@@ -17,9 +18,11 @@ from taskreloader import TaskReloader
 from godaddytaskretriever import GoDaddyTaskRetriever
 from godaddytaskmerger import GoDaddyTaskMerger
 from godaddytasksmerger import GoDaddyTasksMerger
+from todotasks import ToDoTasks
 from taskdataaccess import TaskDataAccess
 from sqlite_database import SQLiteDatabase
 from migration_runner import MigrationRunner
+from taskconverter import TaskConverter
 
 DAILY_LOG_NAME = 'todopageslog'
 DAILY_LOG_EXT = 'log'
@@ -28,12 +31,14 @@ DAILY_ERR_EXT = 'err'
 class ToDoPagegroup(object):
     def __init__(self, configurations):
         www_path = configurations['WWWPath']
-        self.factory = Factory()
+        self.factory = StaticFactory.initialise_factory()
 
         self.factory.register('DateTimeWrapper', DateTimeWrapper())
         self.factory.register('FsWrapper', FsWrapper())
         self.set_up_database(configurations['DatabasePath'], configurations['MigrationsPath'])
-        self.factory.register('TaskDataAccess', TaskDataAccess(self.factory))
+        self.factory.register('ToDoTasks', ToDoTasks())
+        self.taskdataaccess = TaskDataAccess(self.factory)
+        self.factory.register('TaskDataAccess', self.taskdataaccess)
         self.factory.register('GoDaddyTaskRetriever', GoDaddyTaskRetriever())
         self.restcommandparser = RestCommandParser()
         self.filepathhandler = FilePathHandler(www_path)
@@ -45,6 +50,7 @@ class ToDoPagegroup(object):
         self.logger.chain(ConsoleLogger(True))
         self.factory.register('Logger', self.logger)
 
+        self.factory.register('TaskConverter', TaskConverter())
         self.factory.register('GoDaddyTaskMerger', GoDaddyTaskMerger(self.factory))
         self.factory.register('GoDaddyTasksMerger', GoDaddyTasksMerger(self.factory))
         self.tesk_reloader = TaskReloader(self.factory)
@@ -71,6 +77,11 @@ class ToDoPagegroup(object):
     def handle_command(self, request, command):
         if command.Command == 'reloadtasks':
             self.tesk_reloader.reload_tasks()
-            request.server.server_response_json('[{"task":"do"},{"task":"reloaded"}]')
+            request.server.server_response_json(self.fetch_current_tasks_as_json())
         else:
-            request.server.server_response_json('[{"task":"do"},{"task":"something"}]')
+            request.server.server_response_json(self.fetch_current_tasks_as_json())
+
+    def fetch_current_tasks_as_json(self):
+        tasks = self.taskdataaccess.retrieve_current_tasks()
+        tasks_dictionary = ToDoTasks.task_objects_to_dictionaries(tasks)
+        return json.dumps(tasks_dictionary)

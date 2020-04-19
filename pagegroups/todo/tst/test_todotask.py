@@ -1,7 +1,6 @@
 import unittest
 import sys
 sys.path.append('../src')
-sys.path.append('../../temperatures/Library/src')
 from unittest.mock import MagicMock
 from todotask import ToDoTask
 
@@ -15,7 +14,7 @@ class TestToDoTask(unittest.TestCase):
         task = ToDoTask.create_task('Title', 'Detail')
         self.assertEqual('Title', task.title)
         self.assertEqual('Detail', task.detail)
-        self.assertIsNone(task.id)
+        self.assertIsNone(task.task_id)
         self.assertFalse(task.done)
         self.assertIsNone(task.position)
         self.assertIsNone(task.godaddy_id)
@@ -29,7 +28,7 @@ class TestToDoTask(unittest.TestCase):
         task = ToDoTask.create_todotask_from_godaddytask(godaddy_task, self.mock_godaddy_datetime_converter)
         self.assertEqual('Task Title', task.title)
         self.assertEqual('Task Detail', task.detail)
-        self.assertIsNone(task.id)
+        self.assertIsNone(task.task_id)
         self.assertTrue(task.done)
         self.assertEqual(1.23, task.position)
         self.assertEqual(42, task.godaddy_id)
